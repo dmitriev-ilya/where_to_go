@@ -10,7 +10,7 @@ class Place(models.Model):
 
     def __str__(self) -> str:
         return self.title
-    
+
 
 class Image(models.Model):
     place = models.ForeignKey(
@@ -20,7 +20,14 @@ class Image(models.Model):
         verbose_name='Место'
         )
     image = models.ImageField('Изображение')
-    sequence_number = models.IntegerField('Порядковый номер изображения', default=1)
+    sequence_number = models.IntegerField(
+        'Порядковый номер изображения',
+        default=0,
+        db_index=True
+    )
+
+    class Meta:
+        ordering = ['sequence_number']
 
     def __str__(self) -> str:
         return f'{self.sequence_number} {self.place}'
