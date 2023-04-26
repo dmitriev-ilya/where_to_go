@@ -8,10 +8,14 @@ from places.models import Place, Image
 
 
 class Command(BaseCommand):
-    help = 'Closes the specified poll for voting'
+    help = 'Load place description from JSON to Where_To_Go DataBase'
 
     def add_arguments(self, parser):
-        parser.add_argument('url', type=str)
+        parser.add_argument(
+            'url',
+            type=str,
+            help='JSON file url'
+        )
 
     def handle(self, *args, **options):
         response = requests.get(options['url'])
