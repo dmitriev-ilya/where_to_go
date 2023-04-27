@@ -7,14 +7,8 @@ from places.models import Place
 
 
 def show_index_page(request):
-    context = {
-        'place_descriptions': {
-            'type': 'FeatureCollection',
-            'features': []
-        }
-    }
-
     places = Place.objects.all()
+    place_features = []
     for place in places:
         place_feature = {
             'type': 'Feature',
@@ -28,7 +22,14 @@ def show_index_page(request):
                 'detailsUrl': reverse('json_place_detail', args=[place.id])
             }
         }
-        context['place_descriptions']['features'].append(place_feature)
+        place_features.append(place_feature)
+
+    context = {
+        'place_descriptions': {
+            'type': 'FeatureCollection',
+            'features': place_features
+        }
+    }
 
     return render(request, 'index.html', context=context)
 
