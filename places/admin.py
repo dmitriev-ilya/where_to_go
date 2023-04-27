@@ -15,10 +15,10 @@ class ImagesInline(SortableStackedInline):
 
     def preview_image(self, obj):
         return format_html(
-            '<img src="{url}" width="200" />'.format(
-                url=obj.image.url
-            )
+            '<img src="{url}" width="200" />',
+            url=obj.image.url
         )
+
     fields = ('image', 'preview_image', 'sequence_number')
 
 
