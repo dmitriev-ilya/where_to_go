@@ -30,6 +30,7 @@ class Command(BaseCommand):
                 'latitude': place_description['coordinates']['lat'],
             },
         )
+
         if not created:
             self.stdout.write('This place existing in DataBase')
             return
