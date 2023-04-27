@@ -30,16 +30,14 @@ class Command(BaseCommand):
                 'latitude': place_json['coordinates']['lat'],
             },
         )
-        if created:
-            self.stdout.write('New place created in DataBase')
+        if created and place_json.get('imgs'):
             self.stdout.write('Start images loading...')
             for image_url in place_json.get('imgs', []):
                 image_response = requests.get(image_url)
                 image_response.raise_for_status()
                 imagename = unquote(urlparse(image_url).path.split("/")[-1])
-                image = Image.objects.create(place=place)
-                with ContentFile(image_response.content) as image_content:
-                    image.image.save(imagename, image_content, save=True)
+                with ContentFile(image_response.content, name=imagename) as image_content:
+                    place.images.create(image=image_content)
             self.stdout.write('Complete!')
-        else:
+        if not created:
             self.stdout.write('This place existing in DataBase')
