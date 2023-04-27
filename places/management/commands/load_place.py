@@ -24,20 +24,22 @@ class Command(BaseCommand):
         place, created = Place.objects.get_or_create(
             title=place_json['title'],
             defaults={
-                'description_short': place_json['description_short'],
-                'description_long': place_json['description_long'],
+                'description_short': place_json.get('description_short', ''),
+                'description_long': place_json.get('description_long', ''),
                 'longitude': place_json['coordinates']['lng'],
                 'latitude': place_json['coordinates']['lat'],
             },
         )
-        self.stdout.write('New place created in DataBase')
-        if created and place_json['imgs']:
+        if created:
+            self.stdout.write('New place created in DataBase')
             self.stdout.write('Start images loading...')
-            for image_url in place_json['imgs']:
+            for image_url in place_json.get('imgs', []):
                 image_response = requests.get(image_url)
                 image_response.raise_for_status()
                 imagename = unquote(urlparse(image_url).path.split("/")[-1])
                 image = Image.objects.create(place=place)
                 with ContentFile(image_response.content) as image_content:
                     image.image.save(imagename, image_content, save=True)
-        self.stdout.write('Complete!')
+            self.stdout.write('Complete!')
+        else:
+            self.stdout.write('This place existing in DataBase')
